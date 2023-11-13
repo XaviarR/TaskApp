@@ -36,25 +36,29 @@ namespace TaskApp.ViewModel
 		{
 			await ExecuteAsync(async () =>
 			{
-				// Can create as many for each model, TaskModel change to any model
+				// Can create as many for each models, TaskModel change to any model
 				var tasks = await _context.GetAllAsync<TaskModel>();
 
-				if (tasks is not null && tasks.Any())
+				if (tasks != null && tasks.Any())
 				{
 					// If null create new observable collection
-					if (Tasks is null)
+					if (Tasks == null)
 					{
 						Tasks = new ObservableCollection<TaskModel>();
 					}
-					// Add each task in observable collection
+
+					// Add each task to the observable collection only if it doesn't already exist
 					foreach (var task in tasks)
 					{
-						Tasks.Add(task);
+						if (!Tasks.Any(t => t.Id == task.Id))
+						{
+							Tasks.Add(task);
+						}
 					}
 				}
-			},"Fetching tasks...");
-
+			}, "Fetching tasks...");
 		}
+
 
 		// Update Logic
 		[RelayCommand]
@@ -67,19 +71,25 @@ namespace TaskApp.ViewModel
 		[RelayCommand]
 		private async Task SaveTaskAsync()
 		{
-			if(OperatingTask is null)
+			if (OperatingTask == null)
 			{
 				return;
 			}
+
 			// Update BusyText, if Id == 0 then text should display Creating Task, else Updating Task
 			var busyText = OperatingTask.Id == 0 ? "Creating Task..." : "Updating Task...";
+
 			await ExecuteAsync(async () =>
 			{
 				if (OperatingTask.Id == 0)
 				{
 					// Create Task
 					await _context.AddItemAync<TaskModel>(OperatingTask);
-					Tasks.Add(OperatingTask);
+					// Add the new task to the collection only if it doesn't already exist
+					if (!Tasks.Any(t => t.Id == OperatingTask.Id))
+					{
+						Tasks.Add(OperatingTask);
+					}
 				}
 				else
 				{
@@ -92,10 +102,12 @@ namespace TaskApp.ViewModel
 					Tasks.RemoveAt(index);
 					Tasks.Insert(index, taskCopy);
 				}
+
 				// Reset data of OperatingTask
 				SetOperatingTaskCommand.Execute(new());
-			},busyText);
+			}, busyText);
 		}
+
 
 		// Delete Logic
 		[RelayCommand]

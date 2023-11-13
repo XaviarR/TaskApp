@@ -10,6 +10,7 @@
         <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
+        Icon="{OnPlatform 'home.png'}"
         Route="MainPage" />
         <ShellContent
             Title="About"

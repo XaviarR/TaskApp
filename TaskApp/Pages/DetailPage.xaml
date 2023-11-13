@@ -6,15 +6,15 @@
              x:DataType="viewmodel:DetailViewModel"
              Title="DetailPage">
     <VerticalStackLayout Padding="20">
-        <Label 
-            Text="{Binding Text}"
-            FontSize="25"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-
-
-        <Button Text="Go Back"
-                Command="{Binding GoBackCommand}"
-                BackgroundColor="#F3D8C7"/>
+        <Frame>
+            <StackLayout>
+                <Label Text="Task Details:" FontSize="24" Padding="10"/>
+                <Frame>
+                    <Label Text="{Binding Text}" FontSize="18" VerticalOptions="Center" HorizontalOptions="Center"/>
+                </Frame>
+                
+                <Button Text="Go Back" Margin="0,100,0,0" Command="{Binding GoBackCommand}" BackgroundColor="#BCA37F"/>
+            </StackLayout>
+        </Frame>
     </VerticalStackLayout>
 </ContentPage>
