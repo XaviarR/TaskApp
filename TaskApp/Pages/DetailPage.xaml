@@ -12,7 +12,9 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
 
+
         <Button Text="Go Back"
-                Command="{Binding GoBackCommand}"/>
+                Command="{Binding GoBackCommand}"
+                BackgroundColor="#F3D8C7"/>
     </VerticalStackLayout>
 </ContentPage>

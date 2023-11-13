@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
 
 namespace TaskApp.ViewModel;
 
@@ -24,9 +22,11 @@ public partial class MainViewModel : ObservableObject
 	async Task Add()
 	{
 		if (string.IsNullOrWhiteSpace(Text))
+		{
 			return;
+		}
 
-		if(connectivity.NetworkAccess != NetworkAccess.Internet) 
+		if (connectivity.NetworkAccess != NetworkAccess.Internet)
 		{
 			await Shell.Current.DisplayAlert("Uh Oh!", "No Internet", "OK");
 			return;
@@ -51,6 +51,6 @@ public partial class MainViewModel : ObservableObject
 	{
 		await Shell.Current.GoToAsync($"{nameof(DetailPage)}?Text={s}");
 	}
-	
+
 }
 

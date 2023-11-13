@@ -6,12 +6,18 @@ namespace TaskApp.ViewModel;
 [QueryProperty("Text", "Text")]
 public partial class DetailViewModel : ObservableObject
 {
-	[ObservableProperty]
-	string text;
+    private string text;
 
-	[RelayCommand]
-	async Task GoBack()
-	{
-		await Shell.Current.GoToAsync("../");
-	}
+
+    public string Text
+    {
+        get => text;
+        set => SetProperty(ref text, value);
+    }
+
+    [RelayCommand]
+    async Task GoBack()
+    {
+        await Shell.Current.GoToAsync("../");
+    }
 }

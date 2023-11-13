@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TaskApp.MainPage"
+             xmlns:viewmodel="clr-namespace:TaskApp.ViewModel"
+             xmlns:models="clr-namespace:TaskApp.Models"
+             x:DataType="viewmodel:TaskViewModel">
+    <!--Displayed in the tool bar at the top of the page-->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{OnPlatform Default='+ Add Product', iOS='+'}"
+                     Command="{Binding SetOperatingTaskCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <StackLayout>
+        <!--Create task, when edit is clicked, the functionality changes from saving a new task to editing, pressing the add task in the tool bar reverts functionality-->
+        <VerticalStackLayout>
+            <BoxView Color="#FFF2D8" HeightRequest="1"/>
+            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto" Padding="10" RowSpacing="10" ColumnSpacing="10" BackgroundColor="#FFF2D8">
+                <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                    <Label Text="Task:"/>
+                    <Entry Text="{Binding OperatingTask.TaskText}" Placeholder="Your Task" Margin="0" BackgroundColor="#FFF2D8"/>
+                </VerticalStackLayout>
+
+                <Button Grid.Row="1" Grid.ColumnSpan="2" Text="Update Product" HorizontalOptions="Center" VerticalOptions="End" CornerRadius="4" Padding="50, 0" BackgroundColor="#BCA37F"
+                        Command="{Binding SaveTaskCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding OperatingTask.Id}" Value="0">
+                            <Setter Property="Text" Value="Create Task"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+        </VerticalStackLayout>
+        
+        <Label Text="Your Tasks" FontAttributes="Bold" FontSize="18" Padding="10"/>
+        
+        <!--UI indication of time elapsed to respond to task database--> 
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding IsBusy}">
+            <ActivityIndicator IsRunning="True" VerticalOptions="Center" HorizontalOptions="Center"/>
+            <Label Text="{Binding BusyText}" VerticalOptions="Center" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <Grid RowDefinitions="*, Auto">
+            <CollectionView Grid.Row="0" ItemsSource="{Binding Tasks}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="10" Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TaskModel">
+                        <!--Swipe view with functionality to edit selected task or delete--> 
+                        <SwipeView>
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Edit" BackgroundColor="Green"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TaskViewModel}}, Path=SetOperatingTaskCommand}"
+                                               CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete" BackgroundColor="Red"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TaskViewModel}}, Path=DeleteTaskCommand}"
+                                               CommandParameter="{Binding Id}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="5" Padding="5" BackgroundColor="#FFF2D8">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TaskViewModel}},Path=TapCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                </Grid.GestureRecognizers>
+                                <!--displays information of task in collection view--> 
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding TaskText}" FontAttributes="Bold" />
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding Id, StringFormat='Id: {0}'}" FontSize="12" FontAttributes="Bold" />
+                                
+                            </Grid>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <!--If colleciton view is empty, meaning no tasks are in database, this is displayed on the page-->
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+
+                            <Label Text="No Tasks Found" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                            <Label Text="Try creating a new task"/>
+
+                        </VerticalStackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </Grid>
+    </StackLayout>
+
+
+</ContentPage>
