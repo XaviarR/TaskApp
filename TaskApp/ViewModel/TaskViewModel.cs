@@ -67,7 +67,7 @@ namespace TaskApp.ViewModel
 			OperatingTask = task ?? new();
 		}
 
-		// Save Logic
+		// Save Logic, handles both Adding and Updating by if statement
 		[RelayCommand]
 		private async Task SaveTaskAsync()
 		{
@@ -109,7 +109,7 @@ namespace TaskApp.ViewModel
 		}
 
 
-		// Delete Logic
+		// Delete Logic, When Task is deleted the ID is set to auto increment, meaning that it will continue even when task is deleted resulting in gaps of ID integer
 		[RelayCommand]
 		private async Task DeleteTaskAsync(int id)
 		{
@@ -143,7 +143,8 @@ namespace TaskApp.ViewModel
 				BusyText = "Processing...";
 			}
 		}
-		
+
+		// Function to tap on task inside Collection view to navigate to detail page
 		[RelayCommand]
 		async Task Tap(TaskModel task)
 		{
